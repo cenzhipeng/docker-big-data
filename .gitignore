@@ -1,0 +1,9 @@
+.docker
+.vagrant
+containerd
+containers
+tmp
+.idea
+hadoop
+spark
+runtimes

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>master</value>
+    </property>
+    <property>
+        <!--   yarn 节点的本地文件目录，每个 application 任务的文件都可以在这个目录下找到
+        ${yarn.nodemanager.local-dirs}/usercache/${user}/appcache/application_${appid}     -->
+        <name>yarn.nodemanager.local-dirs</name>
+        <value>/data/yarn-local</value>
+    </property>
+    <property>
+        <!--  节点的附加服务列表  mapreduce_shuffle 是一个专门用于 shuffle 的服务，可以指定相关的类来扩展这个服务    -->
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>2048</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.resource.cpu-vcores</name>
+        <value>1</value>
+    </property>
+</configuration>

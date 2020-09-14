@@ -1,0 +1,38 @@
+version: "3"
+services:
+  master:
+    build: .
+    networks:
+      - big-data
+    hostname: master
+    volumes:
+    - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
+    - ./data/master:/data
+    command: ["/home/hadoop/master.sh"]
+
+  slave1:
+    build: .
+    networks:
+      - big-data
+    hostname: slave1
+    volumes:
+    - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
+    - ./data/slave1:/data
+    command: ["/home/hadoop/slaver.sh"]
+    depends_on:
+      - master
+
+  slave2:
+    build: .
+    networks:
+      - big-data
+    hostname: slave1
+    volumes:
+      - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
+      - ./data/slave2:/data
+    command: ["/home/hadoop/slaver.sh"]
+    depends_on:
+      - master
+
+networks:
+  big-data:
