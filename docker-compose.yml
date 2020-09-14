@@ -26,7 +26,7 @@ services:
     build: .
     networks:
       - big-data
-    hostname: slave1
+    hostname: slave2
     volumes:
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/slave2:/data
