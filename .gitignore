@@ -7,3 +7,5 @@ tmp
 hadoop
 spark
 runtimes
+id_rsa
+id_rsa.pub
