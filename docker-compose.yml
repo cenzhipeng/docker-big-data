@@ -8,7 +8,8 @@ services:
     volumes:
     - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
     - ./data/master:/data
-    command: ["/home/hadoop/master.sh"]
+    - ./:/home/hadoop/configs
+    command: ["/home/hadoop/configs/master.sh"]
 
   slave1:
     build: .
@@ -18,7 +19,8 @@ services:
     volumes:
     - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
     - ./data/slave1:/data
-    command: ["/home/hadoop/slaver.sh"]
+    - ./:/home/hadoop/configs
+    command: ["/home/hadoop/configs/slaver.sh"]
     depends_on:
       - master
 
@@ -30,7 +32,8 @@ services:
     volumes:
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/slave2:/data
-    command: ["/home/hadoop/slaver.sh"]
+      - ./:/home/hadoop/configs
+    command: ["/home/hadoop/configs/slaver.sh"]
     depends_on:
       - master
 
