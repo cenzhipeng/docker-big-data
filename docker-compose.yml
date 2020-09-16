@@ -3,39 +3,68 @@ services:
   master:
     build: .
     networks:
-      - big-data
+      - dps
+    dns:
+      - 172.0.0.10
     hostname: master
+    tty: true
     volumes:
-    - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
-    - ./data/master:/data
-    - ./:/home/hadoop/configs
-    command: ["/home/hadoop/configs/master.sh"]
+      - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
+      - ./data/master:/data
+      - ./:/home/hadoop/configs
+      - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
   slave1:
     build: .
     networks:
-      - big-data
+      - dps
+    dns:
+      - 172.0.0.10
     hostname: slave1
+    tty: true
     volumes:
-    - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
-    - ./data/slave1:/data
-    - ./:/home/hadoop/configs
-    command: ["/home/hadoop/configs/slaver.sh"]
+      - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
+      - ./data/slave1:/data
+      - ./:/home/hadoop/configs
+      - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
   slave2:
     build: .
     networks:
-      - big-data
+      - dps
+    dns:
+      - 172.0.0.10
     hostname: slave2
+    tty: true
     volumes:
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/slave2:/data
       - ./:/home/hadoop/configs
-    command: ["/home/hadoop/configs/slaver.sh"]
+      - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+    command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
+
+
+  dps:
+    image: defreitas/dns-proxy-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
+    environment:
+      - MG_LOG_LEVEL=ERROR
+    hostname: dns.mageddo
+    networks:
+      dps:
+        ipv4_address: 172.0.0.10
+
 networks:
-  big-data:
+  dps:
+    ipam:
+      config:
+        - subnet: 172.0.0.0/24

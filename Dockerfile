@@ -3,7 +3,7 @@ ENV HADOOP_VERSION hadoop-2.6.5
 ENV SPARK_VERSION spark-2.4.7-bin-hadoop2.6
 
 # 基础 ssh 服务
-RUN yum install passwd openssl openssh-server openssh-clients sudo java-1.8.0-openjdk-devel.x86_64 which net-tools -y
+RUN yum install passwd openssl openssh-server openssh-clients sudo java-1.8.0-openjdk-devel.x86_64 which net-tools supervisor -y
 RUN sed -i 's/#*PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 RUN sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config
 RUN ssh-keygen -q -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key -N ''
@@ -49,6 +49,5 @@ RUN echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> /home/hadoop/
 RUN echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> /home/hadoop/.bashrc
 
 
-
-
-CMD ["/home/hadoop/master.sh"]
+RUN sudo yum install epel-release -y
+RUN sudo yum install -y supervisor
