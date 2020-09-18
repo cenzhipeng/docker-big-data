@@ -2,10 +2,13 @@ version: "3"
 services:
   master:
     build: .
+#    networks:
+#      - dps
+#    dns:
+#      - 172.0.0.10
     networks:
-      - dps
-    dns:
-      - 172.0.0.10
+      extnetwork:
+        ipv4_address: 172.19.0.2
     hostname: master
     tty: true
     volumes:
@@ -13,14 +16,18 @@ services:
       - ./data/master:/data
       - ./:/home/hadoop/configs
       - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
   slave1:
     build: .
+#    networks:
+#      - dps
+#    dns:
+#      - 172.0.0.10
     networks:
-      - dps
-    dns:
-      - 172.0.0.10
+      extnetwork:
+        ipv4_address: 172.19.0.3
     hostname: slave1
     tty: true
     volumes:
@@ -28,16 +35,20 @@ services:
       - ./data/slave1:/data
       - ./:/home/hadoop/configs
       - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
   slave2:
     build: .
+#    networks:
+#      - dps
+#    dns:
+#      - 172.0.0.10
     networks:
-      - dps
-    dns:
-      - 172.0.0.10
+      extnetwork:
+        ipv4_address: 172.19.0.4
     hostname: slave2
     tty: true
     volumes:
@@ -45,26 +56,35 @@ services:
       - ./data/slave2:/data
       - ./:/home/hadoop/configs
       - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
 
 
-  dps:
-    image: defreitas/dns-proxy-server
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/resolv.conf:/etc/resolv.conf
-    environment:
-      - MG_LOG_LEVEL=ERROR
-    hostname: dns.mageddo
-    networks:
-      dps:
-        ipv4_address: 172.0.0.10
+#  dps:
+#    image: defreitas/dns-proxy-server
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - /etc/resolv.conf:/etc/resolv.conf
+#    environment:
+#      - MG_LOG_LEVEL=ERROR
+#    hostname: dns.mageddo
+#    networks:
+#      dps:
+#        ipv4_address: 172.0.0.10
+
+#networks:
+#  dps:
+#    ipam:
+#      config:
+#        - subnet: 172.0.0.0/24
+
 
 networks:
-  dps:
-    ipam:
-      config:
-        - subnet: 172.0.0.0/24
+   extnetwork:
+      ipam:
+         config:
+         - subnet: 172.19.0.0/16
+           gateway: 172.19.0.1

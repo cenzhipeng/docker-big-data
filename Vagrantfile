@@ -10,7 +10,11 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.50.4"
   config.vm.provision "shell", path: "machine-init.sh"
   config.ssh.extra_args = ["-D", "18000"]
-  config.vm.network "forwarded_port", guest: 22, host: 22222
-  config.vm.network "forwarded_port", guest: 18000, host: 38000
+#   config.vm.network "forwarded_port", guest: 22, host: 22222
+#   config.vm.network "forwarded_port", guest: 18000, host: 38000
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 4096
+    v.cpus = 1
+  end
   config.vm.synced_folder ".", "/vagrant", type: "nfs"
 end

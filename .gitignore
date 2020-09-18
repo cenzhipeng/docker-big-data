@@ -11,3 +11,6 @@ id_rsa
 id_rsa.pub
 data
 runtimes
+kafka
+zookeeper
+iceberg
