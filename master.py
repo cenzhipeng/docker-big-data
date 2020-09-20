@@ -4,5 +4,5 @@ import os
 import sys
 
 if os.path.exists('/data/namenode'):
-    sys.exit(0)
-os.popen('/home/hadoop/hadoop/sbin/hdfs namenode -format -force')
+    exit(0)
+os.popen('/home/hadoop/hadoop/bin/hdfs namenode -format -force')

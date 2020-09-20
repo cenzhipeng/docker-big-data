@@ -28,6 +28,7 @@ services:
       - ./zookeeper-config/master-myid:/data/zookeeper/myid
       - ./kafka-config/master:/home/hadoop/kafka/config
       - ./hosts:/etc/hosts
+      - ./:/home/hadoop/data
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
   slave1:
@@ -57,6 +58,7 @@ services:
       - ./zookeeper-config/slave1-myid:/data/zookeeper/myid
       - ./kafka-config/slave1:/home/hadoop/kafka/config
       - ./hosts:/etc/hosts
+      - ./:/home/hadoop/data
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
@@ -88,6 +90,7 @@ services:
       - ./zookeeper-config/slave2-myid:/data/zookeeper/myid
       - ./kafka-config/slave2:/home/hadoop/kafka/config
       - ./hosts:/etc/hosts
+      - ./:/home/hadoop/data
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
