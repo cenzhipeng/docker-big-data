@@ -14,3 +14,4 @@ runtimes
 kafka
 zookeeper
 iceberg
+kafka-eagle

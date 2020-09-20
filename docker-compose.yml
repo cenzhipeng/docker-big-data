@@ -2,84 +2,110 @@ version: "3"
 services:
   master:
     build: .
-#    networks:
-#      - dps
-#    dns:
-#      - 172.0.0.10
     networks:
       extnetwork:
         ipv4_address: 172.19.0.2
     hostname: master
     tty: true
     volumes:
+      - ./kafka-eagle-config/system-config.properties:/home/hadoop/kafka-eagle/conf/system-config.properties
+      - ./bashrc:/home/hadoop/.bashrc
+      - ./id_rsa.pub:/home/hadoop/.ssh/authorized_keys
+      - ./master.py:/home/hadoop/master.py
+      - ./slaver.py:/home/hadoop/slaver.py
+      - ./id_rsa:/etc/ssh/id_rsa
+      - ./id_rsa:/home/hadoop/.ssh/id_rsa
+      - ./id_rsa.pub:/home/hadoop/.ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/authorized_keys
+      - ./iceberg/iceberg-spark-runtime-0.9.1.jar:/home/hadoop/spark/jars/iceberg-spark-runtime-0.9.1.jar
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/master:/data
       - ./:/home/hadoop/configs
       - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
+      - ./zookeeper-config/master-zoo.cfg:/home/hadoop/zookeeper/conf/zoo.cfg
+      - ./zookeeper-config/master-myid:/data/zookeeper/myid
+      - ./kafka-config/master:/home/hadoop/kafka/config
+      - ./hosts:/etc/hosts
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
   slave1:
     build: .
-#    networks:
-#      - dps
-#    dns:
-#      - 172.0.0.10
     networks:
       extnetwork:
         ipv4_address: 172.19.0.3
     hostname: slave1
     tty: true
     volumes:
+      - ./bashrc:/home/hadoop/.bashrc
+      - ./id_rsa.pub:/home/hadoop/.ssh/authorized_keys
+      - ./master.py:/home/hadoop/master.py
+      - ./slaver.py:/home/hadoop/slaver.py
+      - ./id_rsa:/etc/ssh/id_rsa
+      - ./id_rsa:/home/hadoop/.ssh/id_rsa
+      - ./id_rsa.pub:/home/hadoop/.ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/authorized_keys
+      - ./iceberg/iceberg-spark-runtime-0.9.1.jar:/home/hadoop/spark/jars/iceberg-spark-runtime-0.9.1.jar
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/slave1:/data
       - ./:/home/hadoop/configs
-      - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./slaver-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
+      - ./zookeeper-config/slave1-zoo.cfg:/home/hadoop/zookeeper/conf/zoo.cfg
+      - ./zookeeper-config/slave1-myid:/data/zookeeper/myid
+      - ./kafka-config/slave1:/home/hadoop/kafka/config
+      - ./hosts:/etc/hosts
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
   slave2:
     build: .
-#    networks:
-#      - dps
-#    dns:
-#      - 172.0.0.10
     networks:
       extnetwork:
         ipv4_address: 172.19.0.4
     hostname: slave2
     tty: true
     volumes:
+      - ./bashrc:/home/hadoop/.bashrc
+      - ./id_rsa.pub:/home/hadoop/.ssh/authorized_keys
+      - ./master.py:/home/hadoop/master.py
+      - ./slaver.py:/home/hadoop/slaver.py
+      - ./id_rsa:/etc/ssh/id_rsa
+      - ./id_rsa:/home/hadoop/.ssh/id_rsa
+      - ./id_rsa.pub:/home/hadoop/.ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/id_rsa.pub
+      - ./id_rsa.pub:/etc/ssh/authorized_keys
+      - ./iceberg/iceberg-spark-runtime-0.9.1.jar:/home/hadoop/spark/jars/iceberg-spark-runtime-0.9.1.jar
       - ./hadoop-master-config:/home/hadoop/hadoop/etc/hadoop
       - ./data/slave2:/data
       - ./:/home/hadoop/configs
-      - ./master-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+      - ./slaver-supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
       - ./spark-config/spark-env.sh:/home/hadoop/spark/conf/spark-env.sh
+      - ./zookeeper-config/slave2-zoo.cfg:/home/hadoop/zookeeper/conf/zoo.cfg
+      - ./zookeeper-config/slave2-myid:/data/zookeeper/myid
+      - ./kafka-config/slave2:/home/hadoop/kafka/config
+      - ./hosts:/etc/hosts
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
     depends_on:
       - master
 
-
-
-#  dps:
-#    image: defreitas/dns-proxy-server
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#      - /etc/resolv.conf:/etc/resolv.conf
-#    environment:
-#      - MG_LOG_LEVEL=ERROR
-#    hostname: dns.mageddo
+#  mysql:
+#    image: mysql:5.7
+#    privileged: true
+#    tty: true
+#    hostname: mysql
 #    networks:
-#      dps:
-#        ipv4_address: 172.0.0.10
+#      extnetwork:
+#        ipv4_address: 172.19.0.5
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=123456
+#      - TZ=Asia/Shanghai
+#      - MYSQL_DATABASE=hive_meta
+#    command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci","--lower_case_table_names=1","--default-authentication-plugin=mysql_native_password"]
 
-#networks:
-#  dps:
-#    ipam:
-#      config:
-#        - subnet: 172.0.0.0/24
 
 
 networks:
